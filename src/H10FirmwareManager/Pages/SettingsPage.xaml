@@ -1,0 +1,129 @@
+<UserControl x:Class="H10FirmwareManager.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Margin="0,0,7,0">
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Folders and package" Style="{StaticResource H3}" Margin="0,0,0,12" />
+
+                        <TextBlock Text="Firmware package (ZIP)" Style="{StaticResource KeyText}" />
+                        <Grid Margin="0,5,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="PackageBox" IsReadOnly="True" FontSize="11.5" />
+                            <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Change…"
+                                    Margin="8,0,0,0" Click="ChangePackage_Click" />
+                        </Grid>
+
+                        <TextBlock Text="Backup folder" Style="{StaticResource KeyText}" />
+                        <Grid Margin="0,5,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="BackupBox" IsReadOnly="True" FontSize="11.5" />
+                            <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Change…"
+                                    Margin="8,0,0,0" Click="ChangeBackupFolder_Click" />
+                        </Grid>
+
+                        <TextBlock Text="Application data" Style="{StaticResource KeyText}" />
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="DataBox" IsReadOnly="True" FontSize="11.5" />
+                            <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Open"
+                                    Margin="8,0,0,0" Click="OpenData_Click" />
+                            <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="Logs"
+                                    Margin="8,0,0,0" Click="OpenLogs_Click" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Default behavior" Style="{StaticResource H3}" Margin="0,0,0,10" />
+                        <CheckBox x:Name="BackupBeforeInstallCheck" Content="Create a backup before installing firmware" />
+                        <CheckBox x:Name="KeepPreviousCheck" Content="Keep the replaced firmware as H10_20GC.mi4.previous"
+                                  Margin="0,10,0,0" />
+                        <CheckBox x:Name="VerifyCheck" Content="Verify SHA-256 and CRC-32 after every write"
+                                  Margin="0,10,0,0" />
+                        <CheckBox x:Name="DeleteRockboxCheck" Content="Delete the .rockbox folder after installing firmware"
+                                  Margin="0,10,0,0" />
+                        <CheckBox x:Name="ConfirmFormatCheck" Content="Require confirmation before formatting"
+                                  Margin="0,10,0,0" />
+                        <Button Style="{StaticResource PrimaryButton}" Content="Save settings" Margin="0,16,0,0"
+                                HorizontalAlignment="Left" Click="Save_Click" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="7,0,0,0">
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="About" Style="{StaticResource H3}" />
+                        <TextBlock x:Name="AboutVersionText" Text="H10 Firmware Manager" FontWeight="SemiBold"
+                                   Margin="0,8,0,0" />
+                        <TextBlock Text="Manages the original firmware of the iRiver H10 20GB (H10 20GC) on Windows 10 and 11. No iRiver drivers or original installer are required."
+                                   Style="{StaticResource Muted}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="26" />
+                                <RowDefinition Height="26" />
+                                <RowDefinition Height="26" />
+                                <RowDefinition Height="26" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Target" Style="{StaticResource KeyText}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="iRiver H10 20GB (H10 20GC)" Style="{StaticResource ValueText}" />
+                            <TextBlock Grid.Row="1" Text="Firmware" Style="{StaticResource KeyText}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="Original iRiver 1.03.01" Style="{StaticResource ValueText}" />
+                            <TextBlock Grid.Row="2" Text="USB IDs" Style="{StaticResource KeyText}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="VID 0B70 · PID 00BA" Style="{StaticResource ValueText}" />
+                            <TextBlock Grid.Row="3" Text="Project" Style="{StaticResource KeyText}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="github.com/leosep/iRiverH10-20GB" Style="{StaticResource ValueText}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Legal notice" Style="{StaticResource H3}" />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   Text="This application is an independent recovery and maintenance tool. It is not affiliated with, endorsed by or supported by iRiver, Reigncom or Rockbox." />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,8,0,0" TextWrapping="Wrap"
+                                   Text="The bundled firmware is the property of its respective rights holders and is included only for recovery and preservation of H10 players. You are responsible for complying with the laws that apply to you." />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,8,0,0" TextWrapping="Wrap"
+                                   Text="Flashing firmware and formatting drives carry a risk of data loss or a non-booting player. Use the tool at your own risk." />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Troubleshooting quick guide" Style="{StaticResource H3}" />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   Text="Player not detected: reset it with a paperclip, connect USB, then hold O + Power until Emergency Connect appears. Windows shows it as a normal drive labelled H10." />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,8,0,0" TextWrapping="Wrap"
+                                   Text="Installation fails with access denied: close any program using the player (Explorer preview, media players, antivirus scans) and try again." />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,8,0,0" TextWrapping="Wrap"
+                                   Text="Format fails: the app asks Windows for administrator permission. If the prompt is canceled, the drive is left unchanged." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

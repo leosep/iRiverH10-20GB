@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="H10FirmwareManager.Pages.RepairPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.1*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,7,0">
+            <StackPanel>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Health check" Style="{StaticResource H3}" />
+                                <TextBlock Text="Checks the file system, the System folder, firmware CRC, the font and leftover Rockbox files."
+                                           Style="{StaticResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="Run check"
+                                    VerticalAlignment="Top" Click="RunCheck_Click" />
+                        </Grid>
+
+                        <Border x:Name="SummaryBadge" Style="{StaticResource Pill}" Margin="0,14,0,0" Padding="14,10"
+                                Background="#102A24" BorderBrush="#1E5C4C" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse x:Name="SummaryDot" Width="9" Height="9" Margin="0,0,9,0"
+                                         VerticalAlignment="Center" Fill="{StaticResource SuccessBrush}" />
+                                <TextBlock x:Name="SummaryText" Text="Not checked" FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl x:Name="IssuesList" Margin="0,14,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource Inset}" Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Background="{Binding BadgeBrush}" CornerRadius="4" Padding="6,2"
+                                                        Margin="0,0,8,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding SeverityText}" FontSize="9.5" FontWeight="Bold"
+                                                               Foreground="#0A0F1E" />
+                                                </Border>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Detail}" Style="{StaticResource Muted}" Margin="0,5,0,0"
+                                                       TextWrapping="Wrap" />
+                                            <TextBlock Text="{Binding FixHint}" Foreground="{StaticResource AccentHoverBrush}"
+                                                       FontSize="11.5" Margin="0,5,0,0" TextWrapping="Wrap"
+                                                       Visibility="{Binding HasHint}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock x:Name="NoIssuesText" Text="Everything looks good."
+                                   Style="{StaticResource Muted}" Visibility="Collapsed" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="What repair does" Style="{StaticResource H3}" />
+                        <TextBlock Style="{StaticResource Muted}" Margin="0,6,0,0" TextWrapping="Wrap"
+                                   Text="Repair recreates System\ and System\Font\, writes the bundled firmware and font, and can remove Rockbox leftovers. It never formats the drive: formatting is a separate, explicit action that erases everything." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Column="1" Margin="7,0,0,0">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Repair" Style="{StaticResource H3}" />
+                    <TextBlock Text="Create missing folders and reinstall the original firmware. A backup is created first."
+                               Style="{StaticResource Muted}" Margin="0,4,0,12" TextWrapping="Wrap" />
+                    <Button x:Name="RepairButton" Style="{StaticResource PrimaryButton}" Padding="14,11"
+                            Content="Repair firmware and folders" Click="Repair_Click" />
+                    <Button x:Name="RemoveRockboxButton" Style="{StaticResource SecondaryButton}" Padding="14,11"
+                            Content="Remove Rockbox leftovers only" Margin="0,8,0,0" Click="RemoveRockbox_Click" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <TextBlock Text="Format as FAT32" Style="{StaticResource H3}" />
+                    <TextBlock Text="Erases the entire player. Use it only on a new drive (for example after a CompactFlash upgrade) or when the file system is damaged."
+                               Style="{StaticResource Muted}" Margin="0,4,0,14" TextWrapping="Wrap" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,6,0">
+                            <TextBlock Text="Volume label" Style="{StaticResource KeyText}" Margin="0,0,0,5" />
+                            <TextBox x:Name="LabelBox" Text="H10" MaxLength="11" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                            <TextBlock Text="Cluster size" Style="{StaticResource KeyText}" Margin="0,0,0,5" />
+                            <ComboBox x:Name="ClusterCombo" SelectedIndex="1">
+                                <ComboBoxItem Content="4,096 bytes (4K)" Tag="4096" />
+                                <ComboBoxItem Content="16,384 bytes (16K, factory)" Tag="16384" />
+                                <ComboBoxItem Content="32,768 bytes (32K)" Tag="32768" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <CheckBox x:Name="QuickFormatCheck" Content="Quick format" IsChecked="True" Margin="0,12,0,0" />
+                    <TextBlock Text="Formatting requires administrator permission and a confirmation prompt from Windows."
+                               Style="{StaticResource Caption}" Margin="0,6,0,0" TextWrapping="Wrap" />
+
+                    <Button x:Name="FormatButton" Style="{StaticResource DangerButton}" Padding="14,11"
+                            Content="Format player (erases all data)" Margin="0,14,0,0" Click="Format_Click" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <TextBlock Text="Result" Style="{StaticResource H3}" Margin="0,0,0,8" />
+                    <TextBox x:Name="ResultBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                             Height="150" FontFamily="Cascadia Mono, Consolas" FontSize="11.5"
+                             VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

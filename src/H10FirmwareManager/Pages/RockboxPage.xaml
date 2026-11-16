@@ -1,0 +1,134 @@
+<UserControl x:Class="H10FirmwareManager.Pages.RockboxPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.05*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,7,0">
+            <StackPanel>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Rockbox status" Style="{StaticResource H3}" />
+                                <TextBlock Text="Detects a Rockbox bootloader, the saved original firmware and the .rockbox data folder."
+                                           Style="{StaticResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="Rescan"
+                                    VerticalAlignment="Top" Click="Rescan_Click" />
+                        </Grid>
+
+                        <Border x:Name="StatusBadge" Style="{StaticResource Pill}" Margin="0,14,0,0" Padding="14,10"
+                                Background="#102A24" BorderBrush="#1E5C4C" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse x:Name="StatusDot" Width="9" Height="9" Margin="0,0,9,0"
+                                         VerticalAlignment="Center" Fill="{StaticResource SuccessBrush}" />
+                                <TextBlock x:Name="StatusSummaryText" Text="Rockbox is not installed." FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock x:Name="StatusDetailText" Text="No Rockbox files found."
+                                   Style="{StaticResource Muted}" Margin="0,12,0,0" TextWrapping="Wrap" />
+
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource Inset}" Margin="0,0,5,0">
+                                <StackPanel>
+                                    <TextBlock Text="BOOTLOADER" Style="{StaticResource Caption}" />
+                                    <TextBlock x:Name="BootloaderText" Text="—" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                    <TextBlock Text="System\H10_20GC.mi4" Style="{StaticResource MonoText}"
+                                               Foreground="{StaticResource MutedBrush}" Margin="0,3,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Inset}" Margin="5,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="SAVED ORIGINAL" Style="{StaticResource Caption}" />
+                                    <TextBlock x:Name="SavedOriginalText" Text="—" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                    <TextBlock Text="System\OF.mi4" Style="{StaticResource MonoText}"
+                                               Foreground="{StaticResource MutedBrush}" Margin="0,3,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Style="{StaticResource Inset}" Margin="0,10,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="ROCKBOX DATA" Style="{StaticResource Caption}" />
+                                    <TextBlock x:Name="RockboxFolderText" Text="—" FontWeight="SemiBold" Margin="0,5,0,0" />
+                                    <TextBlock Text=".rockbox\" Style="{StaticResource MonoText}"
+                                               Foreground="{StaticResource MutedBrush}" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <TextBlock x:Name="RockboxFolderSizeText" Grid.Column="1" Text=""
+                                           Style="{StaticResource Muted}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="How Rockbox works on the H10" Style="{StaticResource H3}" />
+                        <TextBlock Margin="0,6,0,0" Style="{StaticResource Muted}" TextWrapping="Wrap"
+                                   Text="The Rockbox installer replaces System\H10_20GC.mi4 with a small Rockbox bootloader, moves the original firmware to System\OF.mi4 and adds a .rockbox folder at the root. Rockbox then boots from there, and the original firmware can be started from its menu." />
+                        <TextBlock Margin="0,8,0,0" Style="{StaticResource Muted}" TextWrapping="Wrap"
+                                   Text="Replacing Rockbox means writing the original 1.03.01 image back to System\H10_20GC.mi4. The .rockbox folder and System\OF.mi4 are optional leftovers and are not required for the original firmware to boot." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Column="1" Margin="7,0,0,0">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Replace with original firmware" Style="{StaticResource H3}" />
+                    <TextBlock Text="Writes the bundled iRiver 1.03.01 image over the Rockbox bootloader. A backup is always created first."
+                               Style="{StaticResource Muted}" Margin="0,4,0,12" TextWrapping="Wrap" />
+
+                    <CheckBox x:Name="DeleteRockboxCheck" Content="Delete the .rockbox folder after installing" />
+                    <CheckBox x:Name="DeleteOfCheck" Content="Delete System\OF.mi4 (saved original firmware)"
+                              Margin="0,10,0,0" />
+                    <TextBlock Text="Keep System\OF.mi4 if you want to keep dual boot information, for example when you plan to reinstall Rockbox later."
+                               Style="{StaticResource Caption}" Margin="0,6,0,0" TextWrapping="Wrap" />
+
+                    <Button x:Name="ReplaceButton" Style="{StaticResource PrimaryButton}" Padding="16,12"
+                            Content="Replace Rockbox with original firmware" Margin="0,16,0,0"
+                            Click="Replace_Click" />
+
+                    <ProgressBar x:Name="ReplaceProgressBar" Margin="0,16,0,8" Maximum="100" />
+                    <TextBlock x:Name="ProgressStageText" Text="Idle" FontWeight="SemiBold" FontSize="12" />
+                    <TextBlock x:Name="ProgressMessageText" Text="Nothing is being written." Style="{StaticResource Muted}"
+                               Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Replacement log" Style="{StaticResource H3}" />
+                        <Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="Copy"
+                                Click="CopyLog_Click" />
+                    </Grid>
+                    <ListBox x:Name="ReplaceLogList" Height="300" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

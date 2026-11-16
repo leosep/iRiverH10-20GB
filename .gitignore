@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+*.user
+*.suo
+.vs/
+TestResults/
+
+# Local research artifacts (firmware dumps, decrypted images, downloaded packages)
+_research/
+*.dec.bin
+*.mi4.bin
+
+# Logs / local backups
+*.log
+backups/
+
+# OS
+Thumbs.db
+.DS_Store

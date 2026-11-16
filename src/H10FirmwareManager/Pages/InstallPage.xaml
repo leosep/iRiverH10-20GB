@@ -1,0 +1,148 @@
+<UserControl x:Class="H10FirmwareManager.Pages.InstallPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1.08*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,7,0">
+            <StackPanel>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="1 · Player" Style="{StaticResource H3}" />
+                        <TextBlock Text="The H10 must be in Emergency Connect (USB mass storage) mode."
+                                   Style="{StaticResource Muted}" Margin="0,4,0,12" />
+                        <ComboBox x:Name="TargetCombo" SelectionChanged="TargetCombo_SelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Volume.DriveLetter}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Volume.Label}" Margin="8,0,0,0" />
+                                        <TextBlock Text="{Binding StatusText}" Margin="10,0,0,0"
+                                                   Foreground="{StaticResource MutedBrush}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Border Style="{StaticResource Inset}" Margin="0,12,0,0">
+                            <StackPanel>
+                                <TextBlock x:Name="CurrentFirmwareText" Text="No player selected" FontWeight="SemiBold" />
+                                <TextBlock x:Name="DeviceHintText" Text="Connect the player and press Rescan."
+                                           Style="{StaticResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="2 · Firmware package" Style="{StaticResource H3}" />
+                        <TextBlock Text="The MSI bundles the original 1.03.01 package. You can also choose another ZIP made with this manifest format."
+                                   Style="{StaticResource Muted}" Margin="0,4,0,12" TextWrapping="Wrap" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="PackagePathBox" IsReadOnly="True" FontSize="11.5" />
+                            <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Browse…"
+                                    Margin="8,0,0,0" Click="BrowsePackage_Click" />
+                        </Grid>
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock x:Name="PackageNameText" Text="Package not loaded" FontWeight="SemiBold" />
+                                <TextBlock x:Name="PackageVersionText" Text="—" Style="{StaticResource Muted}" Margin="0,3,0,0" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="Reload"
+                                    Click="ReloadPackage_Click" />
+                        </Grid>
+                        <ItemsControl x:Name="EntriesList" Margin="0,10,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource Inset}" Margin="0,0,0,6" Padding="10,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12" />
+                                                <TextBlock Text="{Binding DevicePath}" Style="{StaticResource MonoText}"
+                                                           Foreground="{StaticResource MutedBrush}" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding SizeText}" Style="{StaticResource Muted}"
+                                                       VerticalAlignment="Center" Margin="10,0,0,0" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                    <StackPanel>
+                        <TextBlock Text="3 · Options" Style="{StaticResource H3}" />
+                        <TextBlock Text="A backup is strongly recommended. It contains every system file with its SHA-256 hash."
+                                   Style="{StaticResource Muted}" Margin="0,4,0,12" TextWrapping="Wrap" />
+                        <CheckBox x:Name="CreateBackupCheck" Content="Create a full backup before installing" IsChecked="True" />
+                        <CheckBox x:Name="IncludeFontCheck" Content="Install the CJK system font (System\Font\cjk12.fnt)" IsChecked="True" Margin="0,10,0,0" />
+                        <CheckBox x:Name="KeepPreviousCheck" Content="Keep the previous firmware as H10_20GC.mi4.previous" IsChecked="True" Margin="0,10,0,0" />
+                        <CheckBox x:Name="VerifyCheck" Content="Verify SHA-256 and CRC-32 after writing" IsChecked="True" Margin="0,10,0,0" />
+                        <Border Height="1" Background="{StaticResource BorderSoftBrush}" Margin="0,14" />
+                        <CheckBox x:Name="DeleteRockboxFolderCheck" Content="Delete the .rockbox folder after installing" Margin="0,2,0,0" />
+                        <CheckBox x:Name="DeleteOfCheck" Content="Delete System\OF.mi4 after installing" Margin="0,10,0,0" />
+                        <CheckBox x:Name="AllowOverrideCheck" Content="Allow installation on an unconfirmed drive" Margin="0,10,0,0" />
+                        <TextBlock Text="Only enable the override if you are certain the selected drive is the player. Formatting and installation can destroy data."
+                                   Style="{StaticResource Caption}" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Column="1" Margin="7,0,0,0">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Ready to install" Style="{StaticResource H3}" />
+                    <TextBlock x:Name="SummaryText" Text="Select a player and a firmware package."
+                               Style="{StaticResource Muted}" Margin="0,5,0,12" TextWrapping="Wrap" />
+                    <Button x:Name="InstallButton" Style="{StaticResource PrimaryButton}" Padding="16,12"
+                            Content="Install original firmware" Click="Install_Click" />
+                    <ProgressBar x:Name="InstallProgressBar" Margin="0,16,0,8" Maximum="100" />
+                    <TextBlock x:Name="ProgressStageText" Text="Idle" FontWeight="SemiBold" FontSize="12" />
+                    <TextBlock x:Name="ProgressMessageText" Text="Nothing is being written." Style="{StaticResource Muted}"
+                               Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Installation log" Style="{StaticResource H3}" />
+                        <Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="Copy"
+                                Click="CopyLog_Click" />
+                    </Grid>
+                    <ListBox x:Name="InstallLogList" Height="360" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <TextBlock Text="After installation" Style="{StaticResource H3}" />
+                    <TextBlock Text="Safely eject the player, unplug USB, then power it on. The first boot may take longer because the player rebuilds its database."
+                               Style="{StaticResource Muted}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

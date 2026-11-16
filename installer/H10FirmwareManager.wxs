@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?ifndef Version?>
+    <?define Version = "1.0.0.0" ?>
+  <?endif?>
+
+  <!--
+    H10 Firmware Manager - WiX v7 installer.
+
+    The MSI is self-contained:
+      * H10FirmwareManager.exe       self-contained .NET 9 WPF application
+      * firmware\H10-20GC_original_1.03.01.zip
+                                     original iRiver 1.03.01 firmware package,
+                                     found by the app at runtime
+  -->
+  <Package
+      Name="H10 Firmware Manager"
+      Manufacturer="leosep"
+      Version="$(var.Version)"
+      UpgradeCode="89EBD6C2-A425-44F2-A1BF-ABDEC061E84A"
+      Language="1033"
+      Scope="perMachine"
+      Compressed="yes"
+      InstallerVersion="500">
+
+    <SummaryInformation
+        Description="Installs H10 Firmware Manager and the original iRiver 1.03.01 firmware package for the iRiver H10 20GB (H10 20GC)."
+        Manufacturer="leosep" />
+
+    <MajorUpgrade
+        DowngradeErrorMessage="A newer version of H10 Firmware Manager is already installed. Uninstall it first if you want to install this older version."
+        Schedule="afterInstallInitialize" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Windows 10 or later, 64-bit. -->
+    <Launch
+        Condition="VersionNT64 AND (VersionNT &gt;= 1000)"
+        Message="H10 Firmware Manager requires 64-bit Windows 10 or Windows 11." />
+
+    <!-- Add or Remove Programs entry -->
+    <Icon Id="AppIcon" SourceFile="src\H10FirmwareManager\Assets\app.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/leosep/iRiverH10-20GB" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/leosep/iRiverH10-20GB" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="H10 Firmware Manager">
+        <Directory Id="FirmwareFolder" Name="firmware" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppMenuFolder" Name="H10 Firmware Manager" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <Feature Id="Main" Title="H10 Firmware Manager" Level="1">
+      <ComponentGroupRef Id="ApplicationComponents" />
+      <ComponentGroupRef Id="FirmwareComponents" />
+      <ComponentGroupRef Id="ShortcutComponents" />
+    </Feature>
+
+    <!-- Application -->
+    <ComponentGroup Id="ApplicationComponents">
+      <Component Id="MainExecutable" Directory="INSTALLFOLDER" Guid="*">
+        <File Id="H10FirmwareManagerExe"
+              Source="artifacts\publish\H10FirmwareManager.exe"
+              KeyPath="yes"
+              Checksum="yes" />
+      </Component>
+
+      <!-- Store the install location for support and for the docs. -->
+      <Component Id="InstallRegistry" Directory="INSTALLFOLDER" Guid="*">
+        <RegistryKey Root="HKLM" Key="Software\leosep\H10FirmwareManager">
+          <RegistryValue Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+          <RegistryValue Name="Version" Type="string" Value="[ProductVersion]" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+
+    <!-- Bundled original firmware package (inside the MSI, installed as a file). -->
+    <ComponentGroup Id="FirmwareComponents">
+      <Component Id="BundledFirmwarePackage" Directory="FirmwareFolder" Guid="*">
+        <File Id="FirmwareZip"
+              Source="firmware\H10-20GC_original_1.03.01.zip"
+              KeyPath="yes"
+              Checksum="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Start menu and desktop shortcuts. -->
+    <ComponentGroup Id="ShortcutComponents">
+      <Component Id="StartMenuShortcut" Directory="AppMenuFolder" Guid="*">
+        <Shortcut Id="StartMenuShortcut"
+                  Name="H10 Firmware Manager"
+                  Description="Install, back up, restore and repair iRiver H10 20GB firmware."
+                  Target="[INSTALLFOLDER]H10FirmwareManager.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveAppMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKLM" Key="Software\leosep\H10FirmwareManager"
+                       Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+      <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="*">
+        <Shortcut Id="DesktopShortcut"
+                  Name="H10 Firmware Manager"
+                  Description="Install, back up, restore and repair iRiver H10 20GB firmware."
+                  Target="[INSTALLFOLDER]H10FirmwareManager.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKLM" Key="Software\leosep\H10FirmwareManager"
+                       Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+  </Package>
+</Wix>
