@@ -33,9 +33,13 @@
 
     <MediaTemplate EmbedCab="yes" />
 
-    <!-- Windows 10 or later, 64-bit. -->
+    <!--
+      Windows Installer reports VersionNT = 603 on this Windows 10 build (the value is
+      capped by the msiexec manifest), so Windows 10/11 must not be tested with >= 1000.
+      603 = Windows 8.1 or later; the .NET 9 application itself requires Windows 10 1607+.
+    -->
     <Launch
-        Condition="VersionNT64 AND (VersionNT &gt;= 1000)"
+        Condition="VersionNT64 AND VersionNT &gt;= 603"
         Message="H10 Firmware Manager requires 64-bit Windows 10 or Windows 11." />
 
     <!-- Add or Remove Programs entry -->
